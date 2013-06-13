@@ -1,0 +1,13 @@
+.icon
+  P
+.date
+  = Time.now.strftime("%b %-d, %H:%M")
+.enterDescription
+  = text_field_tag :description, "", :placeholder => "Description"
+.enterMinutes
+  = text_field_tag :total, "", :placeholder => "Minutes", :onkeypress => "return isNumberKey(event)"
+.controls
+  .cancel{:class => "icon"}
+    = link_to "×", "#", :class => "manualIntervalCancel"
+  .save{:class => "icon"}
+    = link_to "/", "#", :class => "manualIntervalSave"

@@ -1,0 +1,34 @@
+<% if @action == "Preview" %>
+	var previewContainer = document.createElement('div'); 
+	$(previewContainer).addClass('previewLighbox');
+	$(previewContainer).html("<div class='previewControls'><a href='#' class='closePreview icon'>×</a><a href='#' class='sendPreview' data-invoice_id='<%= escape_javascript(@invoice.id.to_s) %>'>Send</a><span class='savingPdf icon'></span></div><div class='pdf'><%= escape_javascript(@invoice.contents.gsub("#{Rails.root.to_s}/public/images", "/images").html_safe) %></div>"); 
+	$(previewContainer).lightbox_me({centered:true, closeSelector: ".closePreview", destroyOnClose: true});
+	$(previewContainer).trigger('reposition');
+	$(".sendPreview").live("click", function(event){
+		event.preventDefault();
+		var project = "<%= escape_javascript(@project.id.to_s) %>";
+ 		var user = "<%= escape_javascript(@user.id.to_s) %>";     
+		var invoiceId = $(this).attr("data-invoice_id")
+		     
+		$(".invoicelistforadding li."+invoiceId).find(".icon").eq(0).html(".");
+	     
+	  $(".invoicelistforadding li."+invoiceId).siblings("li").find(".icon").eq(0).html("a");
+    $(".mailForm .attachment input").val("/invoices/user/<%= escape_javascript(@user.email) %>/project/<%= escape_javascript(@project.id.to_s) %>/invoice/<%= escape_javascript(@invoice.id.to_s) %>/<%= escape_javascript(@project.name) %>.pdf");
+	  $(".mailForm .attachment .hasAttachment").html("A <span style='font-size: 10px'>Attachment ready</span>");
+  	$(".mailForm .attachment .addAttachment").removeClass("addAttachment").addClass("removeAttachment").html("×").click(function(){
+  	   $(this).closest(".attachment").find("input").val("");
+  	   $(this).siblings(".hasAttachment").html("");
+  	   $(this).removeClass("removeAttachment").addClass("addAttachment").html("+")
+    });
+  	$('.previewLightbox').trigger('close');
+		$('.previewLightbox').remove();
+		$(".lb_overlay_clear").remove();
+		$(".lb_overlay").remove();
+		$(previewContainer).remove();
+  	
+		
+		
+	});
+<% elsif @action == "save" %>
+
+<% end %>

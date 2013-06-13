@@ -1,0 +1,44 @@
+#wrap.homewrap
+  = render :partial => "layouts/header"
+  #main.clearfix{:class=>"home_main"}
+    .top
+      .topContainer
+        .intro
+          %h1
+            Time tracking and invoice management application for internet usage
+          %p
+            Keep track of time worked, generate PDF invoices, and send them to your clients. Free and easy.
+            = link_to "Register today", '/register'
+            to get started
+        .boxTop
+          - if user_signed_in?
+            .loggedin
+              .text
+                Welcome back.
+              .link
+                = link_to "Go to your account", "/home"
+              
+          - else
+            .loginText
+              
+            .login_form
+              %h2
+                Sign in
+              = form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|
+                = f.label :email
+                = f.email_field :email
+                = f.label :password
+                = f.password_field :password
+                  
+                = f.submit "Sign in"
+              = link_to "Forgot your password?", new_password_path(resource_name)
+        .laptop
+    .mid
+      .container
+        .span-12
+          &nbsp;
+        .span-12{:class => "last"}
+          
+    .low
+      .container
+= render :partial => "layouts/footer"

@@ -1,0 +1,45 @@
+.settingsHeader
+  Project Settings
+.editProjectForm
+  - form_for([@user, @project], :html => {:multipart => true}, :remote => true) do |f|
+    = f.label :name
+    = f.text_field :name, :placeholder => "Project name"
+    .clear
+    = f.label :client_name
+    = f.text_field :client_name, :placeholder => "Client name"
+    .clear
+    = f.label :client_email
+    = f.text_field :client_email, :placeholder => "Client email"
+    .clear
+    =f.label :description
+    = f.text_area :description, :placeholder => "Project description"
+    .clear
+    =f.label :rate
+    = f.text_field :rate, :placeholder => "Project rate", :class => "projectRate"
+    .clear
+    =f.label :projectfee, "Flat fee"
+    = f.text_field :projectfee, :placeholder => "Project cost", :class => "projectRate"
+    .clear
+    =f.label :dev_url, "Development URL"
+    = f.text_field :dev_url, :placeholder => "Development URL"
+    .clear
+    =f.label :pro_url, "Production URL"
+    = f.text_field :pro_url, :placeholder => "Production URL"
+    .clear
+    = label_tag "paid", "Amount paid"
+    = text_field_tag "paid", "", :placeholder => "Currency received"
+    .clear
+    = f.label :completed, "Project completed?"
+    = f.check_box :completed
+    .clear
+    .fileWrapper
+      = f.file_field :projectlogo, :size => "200"
+      .fileOverlay
+        = text_field_tag "fileOverlay","", :placeholder => "Project logo", :class => "fakefile"
+        %span.icon
+          A
+        %span.fileText
+          Select File
+    = link_to "Cancel", "#", :class => "cancelProjectEdit"
+    = f.submit "Update", :id => "project_edit_submit"
+    %span.icon

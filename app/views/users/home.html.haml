@@ -1,0 +1,72 @@
+.notification
+  = flash[:notice]
+#wrap
+  = render :partial => "layouts/header"
+  #main.clearfix{:class=>"app_main"}
+    .top
+      .container
+        .span-6
+          .side
+            .user
+
+            .select
+              %ul
+                %li.active
+                  = link_to "<span class='icon'>³</span> All Projects".html_safe, "#", "data-action" => "allProjects"
+                %li
+                  = link_to "<span class='icon'>p</span> Ongoing".html_safe, "#", "data-action" => "ongoing"
+                %li
+                  = link_to "<span class='icon'>p</span> Completed".html_safe, "#", "data-action" => "completed"
+                %li
+                  = link_to "<span class='icon'>I</span> Invoices".html_safe, "#", "data-action" => "allInvoices"
+                %li
+                  = link_to "<span class='icon'>S</span> Settings".html_safe, "#", "data-action" => "mainSettings", :class => "mainSettings"
+        .span-18{:class => "last applicationWrapper"}
+          .application
+            .appContainer
+              .controls
+                = link_to "<span class='icon'>+</span> Add New".html_safe, "#", :class => "newProject"
+              .newProjectForm
+                - form_for([@user, @user.projects.build], :html => {:multipart => true}, :remote => true) do |f|
+                  = f.text_field :name, :placeholder => "Project name"
+                  = f.text_field :client_name, :placeholder => "Client name"
+                  = f.text_field :client_email, :placeholder => "Client email"
+                  = f.text_area :description, :placeholder => "Project description"
+                  = f.text_field :rate, :placeholder => "Project rate (numeric only)", :class => "projectRate", :value => "", :onkeypress => "return isNumberKey(event)"
+                  = f.text_field :dev_url, :placeholder => "Development URL"
+                  = f.text_field :pro_url, :placeholder => "Production URL"
+                  = f.text_field :projectfee, :placeholder => "Flat fee (optional)", :class => "projectRate", :value => "", :onkeypress => "return isNumberKey(event)"
+                  .fileWrapper
+                    = f.file_field :projectlogo, :size => "200"
+                    .fileOverlay
+                      = text_field_tag "fileOverlay","", :placeholder => "Project logo", :class => "fakefile"
+                      %span.icon
+                        A
+                      %span.fileText
+                        Select File
+                  = link_to "Cancel", "#", :class => "cancelProject"
+                  = f.submit "Create"
+                  %span.icon
+                    
+              .projects
+                %ul
+                  = render :partial => "layouts/project", :collection => @projects, :as => :p
+            .actionContainer
+              .return
+                %a{:href => "#", :class => "actionReturn", :data => {:project_id => "0"}}
+                  \↩
+              .mailContainer{:class => 'action'}
+              .invoiceContainer{:class => 'action'}
+              .settingsContainer{:class => 'action'}
+              .intervalsContainer{:class => 'action'}
+              .mainSettingsContainer{:class => 'action'}
+              
+    .mid
+      .container
+        .span-12
+          &nbsp;
+        .span-12{:class => "last"}
+          
+    .low
+      .container
+= render :partial => "layouts/footer"

@@ -1,0 +1,5 @@
+clearInterval(savingPdf);
+$('.previewLightbox').trigger('close');
+$('.previewLightbox').remove();
+$(".lb_overlay_clear").remove();
+$('.invoiceSelections ul').append("<li class='invoice-<%= escape_javascript(@invoice.id.to_s) %>'><div class='icon'>a</div><div class='date'><%= escape_javascript(@invoice.created_at.strftime("%b %-d, %H:%M")) %></div><div class='controls'><div class='delete icon'><a href='#' class='invoiceAction deleteInvoiceFromList' data-invoice_id='<%= escape_javascript(@invoice.id.to_s) %>' data-project_id='<%= escape_javascript(@project.id.to_s) %>' data-user_id='<%= escape_javascript(@user.id.to_s) %>' title='Delete'>×</a></div><div class='save'><a href='#' class='invoiceAction saveInvoiceFromList' data-invoice_id='<%= escape_javascript(@invoice.id.to_s) %>' data-project_id='<%= escape_javascript(@project.id.to_s) %>' title='Save'><img src='/images/download.png'></a></div><div class='preview icon'><a href='#' class='invoiceAction previewInvoiceFromList' data-invoice_id='<%= escape_javascript(@invoice.id.to_s) %>' data-project_id='<%= escape_javascript(@project.id.to_s) %>' title='Preview'>L</a></div></div></li>");

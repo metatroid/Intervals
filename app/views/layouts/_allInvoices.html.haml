@@ -1,0 +1,22 @@
+%li{:class => "projectWrapper-#{p.id.to_s} invoiceProjects"}
+  .controls
+    = link_to "<span class='icon'>+</span> Add New".html_safe, "#", :class => "newInvoiceFromAll", "data-project_id" => p.id.to_s, "data-user_id" => @user.id.to_s
+  .projectName
+    = p.name.blank? ? "Project Name" : p.name
+  %ul.invoices
+    - p.invoices.each do |i|
+      %li{:class => "invoice-#{i.id.to_s}"}
+        .icon
+          a
+        .date
+          = i.created_at.strftime("%b %-d, %H:%M")
+        .controls
+          .delete{:class => "icon"}
+            %a{:href => "#", :class => "invoiceAction deleteInvoiceFromList", :data => {:invoice_id => i.id.to_s, :project_id => p.id.to_s, :user_id => @user.id.to_s}, :title => "Delete"}
+              ×
+          .save
+            %a{:href => "#", :class => "invoiceAction saveInvoiceFromList", :data => {:invoice_id => i.id.to_s, :project_id => p.id.to_s}, :title => "Save"}
+              = image_tag("/images/download.png")
+          .preview{:class => "icon"}
+            %a{:href => "#", :class => "invoiceAction previewInvoiceFromList", :data => {:invoice_id => i.id.to_s, :project_id => p.id.to_s}, :title => "Preview"}
+              L

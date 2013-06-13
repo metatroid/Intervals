@@ -1,0 +1,28 @@
+<% if @method != "manual" %>
+	<% if @saved %>
+		$(".project-<%= escape_javascript(@project.id.to_s) %> .timerResponse").html("");
+		$(".project-<%= escape_javascript(@project.id.to_s) %> .addDescription").hide();
+	<% elsif @flag != "running" %>
+		$(".project-<%= escape_javascript(@project.id.to_s) %> .timerResponse").html("<div class='intervalTimerResult interval-<%= escape_javascript(@interval.id.to_s) %>'><span><%= escape_javascript(@interval.total) %></span> Minutes</div>");
+		
+		clearInterval(instance<%= escape_javascript(@interval.id.to_s) %>);
+		
+		$(".project-<%= escape_javascript(@project.id.to_s) %>").closest('li').find('.pTime').html("Time worked: <%= escape_javascript(distance_of_time_in_hours_and_minutes(@project.total_time.to_i*60, 0)) %>");
+		
+		$(".project-<%= escape_javascript(@project.id.to_s) %> .addDescription .saveInterval, .project-<%= escape_javascript(@project.id.to_s) %> .addDescription .cancelInterval").attr("data-interval_id", <%= escape_javascript(@interval.id.to_s) %>);
+		$(".project-<%= escape_javascript(@project.id.to_s) %> .addDescription").show();
+	<% else %>
+		$(".intervalList-<%= escape_javascript(@interval.id.to_s) %> .note").html("<%= escape_javascript(@interval.description) %>");
+		$(".intervalList-<%= escape_javascript(@interval.id.to_s) %> .duration").html("<%= escape_javascript(distance_of_time_in_hours_and_minutes(@interval.total.to_i*60, 0)) %>");
+		$(".project-<%= escape_javascript(@project.id.to_s) %>").closest('li').find('.pTime').html("Time worked: <%= escape_javascript(distance_of_time_in_hours_and_minutes(@project.total_time.to_i*60, 0)) %>");
+		$(".project-<%= escape_javascript(@project.id.to_s) %>").closest('li').find('.pBalance').html("Project overage: $<%= escape_javascript(@project.projectbalance) %>");
+		$(".project-<%= escape_javascript(@project.id.to_s) %>").closest('li').find('.pDueHourly span').html("$<%= escape_javascript(@project.project_amount) %>");
+	<% end %>
+
+<% else %>
+	$(".intervalList-<%= escape_javascript(@interval.id.to_s) %> .note").html("<%= escape_javascript(@interval.description) %>");
+	$(".intervalList-<%= escape_javascript(@interval.id.to_s) %> .duration").html("<%= escape_javascript(distance_of_time_in_hours_and_minutes(@interval.total.to_i*60, 0)) %>");
+	$(".project-<%= escape_javascript(@project.id.to_s) %>").closest('li').find('.pTime').html("Time worked: <%= escape_javascript(distance_of_time_in_hours_and_minutes(@project.total_time.to_i*60, 0)) %>");
+	$(".project-<%= escape_javascript(@project.id.to_s) %>").closest('li').find('.pBalance').html("Project overage: $<%= escape_javascript(@project.projectbalance) %>");
+	$(".project-<%= escape_javascript(@project.id.to_s) %>").closest('li').find('.pDueHourly span').html("$<%= escape_javascript(@project.project_amount) %>");
+<% end %>

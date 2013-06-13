@@ -1,0 +1,72 @@
+%li{:class => "projectWrapper-#{p.id}"}
+  .icons
+    = p.projectlogo.blank? ? image_tag("/images/defaultProjectIcon.png") : image_tag(p.projectlogo.url(:thumb))
+  .titleInfo
+    .pName
+      = p.name.blank? ? "Project Name" : p.name
+    .cName
+      = p.client_name.blank? ? "Client Name" : p.client_name
+    .pRate
+      Rate:
+      = p.rate.blank? ? "$0/hr" : "$" << p.rate << "/hr"
+    .pTime
+      Time worked:
+      = p.total_time.blank? ? "0:00" : distance_of_time_in_hours_and_minutes(p.total_time.to_i*60, 0)
+    - unless p.projectfee.blank?
+      .pBudget
+        Project budget:
+        = "$" << p.projectfee
+      .pBalance
+        Project overage:
+        = p.projectbalance.blank? ? "$" << p.projectfee : "$" << p.projectbalance
+      .pDueFlat
+        Flat balance:
+        %span
+          = p.project_remainder.blank? ? "$" << p.projectfee : "$" << p.project_remainder
+      .pDueHourly{:class => "withFlat"}
+        Hourly balance:
+        %span
+          = p.project_amount.blank? ? "$" << "%.2f" % (((p.total_time.to_f/60) * p.rate.to_i)) : "$" << p.project_amount
+    - else
+      .pDueHourly{:class => "withoutFlat"}
+        Balance:
+        %span
+          = p.project_amount.blank? ? "$" << "%.2f" % (((p.total_time.to_f/60) * p.rate.to_i)) : "$" << p.project_amount
+    - unless p.project_paid.blank?
+      .pPaid
+        Amount paid:
+        = "$" << p.project_paid
+    -#.cEmail
+      -#%a{:href => "#", :class => "mailClient", :data => { :email => p.client_email }}
+        -#%span.icon
+          -#\@
+        -#Send Mail
+  .timer{:class => "project-#{p.id}"}
+    %a{:data => {:project_id => p.id, :user_id => @user.id}, :href => "#", :class => "startTimer stopped"}
+      %span.icon
+        P
+      Start Timer
+    .timerResponse
+    .addDescription
+      = text_field_tag "intervalDescription", "", :placeholder => "Notes"
+      %a{:href => "#", :data => {:project_id => p.id, :user_id => @user.id}, :class => 'saveInterval'}
+        Save
+      %a{:href => "#", :data => {:project_id => p.id, :user_id => @user.id}, :class => "cancelInterval"}
+        Cancel
+  .clientControls
+    .icon
+      %a{:href => "#", :class => "projectAction projectSettings", :data => { :project_id => p.id, :action => "settings" }, :title => "Settings"}
+        S
+      %a{:href => "#", :class => "projectAction projectIntervals", :data => { :project_id => p.id, :action => "intervals" }, :title => "View hours"}
+        P
+      %a{:href => "#", :class => "projectOpen", :data => { :pro_url => p.pro_url, :dev_url => p.dev_url }, :title => "Open site"}
+        D
+      %a{:href => "#", :class => "projectInvoice", :data => { :project_id => p.id, :action => "invoice" }, :title => "Generate invoice"}
+        a
+      %a{:href => "#", :class => "projectAction projectMail", :data => { :project_id => p.id, :action => "mail" }, :title => "Send mail to client"}
+        \@
+      %a{:href => "#", :class => "projectDelete", :data => {:project_id => p.id, :user_id => @user.id}, :title => "Delete"}
+        \'
+  .description
+    %p
+      = p.description.blank? ? "Project Description" : p.description

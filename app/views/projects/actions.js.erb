@@ -1,0 +1,342 @@
+<% if @action == "allProjects" %>
+	$(".newProject").show();
+	$(".projects").html("<ul><%= escape_javascript(render :partial => "layouts/project", :collection => @projects, :as => :p) %></ul>");
+<% elsif @action == "ongoing" %>
+	$(".newProject").show();
+	$(".projects").html("<ul><%= escape_javascript(render :partial => "layouts/project", :collection => @ongoing, :as => :p) %></ul>");
+<% elsif @action == "completed" %>
+	$(".newProject").show();
+	$(".projects").html("<ul><%= escape_javascript(render :partial => "layouts/project", :collection => @completed, :as => :p) %></ul>");
+<% elsif @action == "allInvoices" %>
+	$(".newProject").hide();
+	$(".projects").html("<ul><%= escape_javascript(render :partial => "layouts/allInvoices", :collection => @projects, :as => :p) %></ul>");
+	$(".newInvoiceFromAll").click(function(event){
+		event.preventDefault();
+		var project = $(this).attr('data-project_id'), projectAction = "invoice";
+		moveToAction(projectAction, project);
+	});
+<% elsif @action == "mainSettings" %>
+	
+	$(".mainSettingsContainer").html("<%= escape_javascript(render 'layouts/mainSettings') %>");
+	
+<% elsif @action == "mail" %>
+	
+	$(".mailContainer").html("<%= escape_javascript(render 'layouts/mail') %>");
+	<% if @callback == "addAttachment" %>
+	   $(".mailForm .attachment input").val("<%= escape_javascript(@project.invoices.last.pdf_url) %>");
+	   if($(".mailForm .attachment input").val().length > 0){
+	     $(".mailForm .attachment .hasAttachment").html("A <span style='font-size: 10px'>Attachment ready</span>");
+	     $(".mailForm .attachment .addAttachment").removeClass("addAttachment").addClass("removeAttachment").html("×").click(function(){
+	       $(this).closest(".attachment").find("input").val("");
+	       $(this).siblings(".hasAttachment").html("");
+	       $(this).removeClass("removeAttachment").addClass("addAttachment").html("+")
+	     });
+	   }
+  <% elsif @callback.include? "_" %>
+    
+    $(".mailForm .attachment input").val("<%= escape_javascript(@project.invoices.find(@invoiceId).pdf_url) %>");
+	   if($(".mailForm .attachment input").val().length > 0){
+	     $(".mailForm .attachment .hasAttachment").html("A <span style='font-size: 10px'>Attachment ready</span>");
+	     $(".mailForm .attachment .addAttachment").removeClass("addAttachment").addClass("removeAttachment").html("×").click(function(){
+	       $(this).closest(".attachment").find("input").val("");
+	       $(this).siblings(".hasAttachment").html("");
+	       $(this).removeClass("removeAttachment").addClass("addAttachment").html("+")
+	     });
+	   }
+	<% end %>
+	$(".mailForm .attachment .addAttachment").live("click", function(){
+	    
+	    $(".invoicelistforadding").html("<div class='invoiceSelections'><%= escape_javascript(render 'layouts/invoiceList') %></div>");
+	    if("<%= escape_javascript(@project.invoices.length.to_s) %>" == "0"){
+			   $(".invoicelistforadding").html("Nothing to add. Create an invoice first.");
+		  }
+	    $(".invoicelistforadding li").click(function(){
+	       $(this).find(".icon").eq(0).html(".");
+	       $(this).siblings("li").find(".ficon").html("a");
+
+	       $(".mailForm .attachment input").val("/invoices/user/<%= escape_javascript(@user.email) %>/project/"+$(this).find('.previewInvoiceFromList').attr('data-project_id')+"/invoice/"+$(this).find('.previewInvoiceFromList').attr('data-invoice_id')+"/<%= escape_javascript(@project.name) %>.pdf");
+	       $(".mailForm .attachment .hasAttachment").html("A <span style='font-size: 10px'>Attachment ready</span>");
+  	     $(".mailForm .attachment .addAttachment").removeClass("addAttachment").addClass("removeAttachment").html("×").click(function(){
+  	       $(this).closest(".attachment").find("input").val("");
+  	       $(this).siblings(".hasAttachment").html("");
+  	       $(this).removeClass("removeAttachment").addClass("addAttachment").html("+")
+  	     });
+	    });
+	});
+<% elsif @action == "invoice" %>
+	
+	$(".invoiceContainer").html("<div class='invoiceSelections'><%= escape_javascript(render 'layouts/invoiceList') %></div>");
+
+	var previewContainer = document.createElement('div'); 
+	$(previewContainer).addClass('previewLightbox');
+	$(previewContainer).html("<div class='previewControls'><a href='#' class='closePreview icon'>×</a><a href='#' class='saveInvoicePreview'>Save</a><a href='#' class='sendPreview' data-invoice_id='<%= escape_javascript(@interval.id.to_s) %>'>Send</a><span class='savingPdf icon'></span><div class='editText'>Click anywhere to edit</div></div><%= escape_javascript(render 'layouts/invoice') %>"); 
+	$(previewContainer).lightbox_me({centered:true, closeSelector: ".closePreview", destroyOnClose: true, onClose: function(){$(".saveInvoicePreview").die();}});
+	$(previewContainer).trigger('reposition');
+	
+	$(".sendPreview").live("click", function(event){
+		event.preventDefault();
+		var project = "<%= escape_javascript(@project.id.to_s) %>";
+ 		var user = "<%= escape_javascript(@user.id.to_s) %>";
+
+		if($(".saveInvoicePreview").length != 0){
+		  var that = this;
+  		var loaderSymbols = ['0', '1', '2', '3', '4', '5', '6', '7']; 
+  		var loaderIndex = 0;
+  		savingPdf = setInterval(function(){
+  			loaderIndex = loaderIndex  < loaderSymbols.length - 1 ? loaderIndex + 1 : 0;
+  			$(that).siblings('.savingPdf').html(loaderSymbols[loaderIndex]);
+  		}, 100);
+  		  		$.post("/users/"+user+"/projects/"+project+"/invoices", {
+  			projectId: project,
+  			contents: $('.pdf').eq(-1).html()
+  		}, function(){
+  			$(".saveInvoicePreview").die();
+  			clearInterval(savingPdf);
+  		});
+  		
+  		$(".invoiceContainer").html("");		
+  		moveToAction("mail", project, "addAttachment");
+		
+		} else if($(".mailForm").length != 0){
+		     
+		     var invoiceId = $(this).attr("data-invoice_id")
+		     
+		     $(".invoicelistforadding li."+invoiceId).find(".icon").eq(0).html(".");
+	       
+	       $(".invoicelistforadding li."+invoiceId).siblings("li").find(".icon").eq(0).html("a");
+
+	       $(".mailForm .attachment input").val("/invoices/user/<%= escape_javascript(@user.email) %>/project/"+$(".invoicelistforadding li."+invoiceId).find('.previewInvoiceFromList').attr('data-project_id')+"/invoice/"+$(".invoicelistforadding li."+invoiceId).find('.previewInvoiceFromList').attr('data-invoice_id')+"/<%= escape_javascript(@project.name) %>.pdf");
+	       $(".mailForm .attachment .hasAttachment").html("A <span style='font-size: 10px'>Attachment ready</span>");
+  	     $(".mailForm .attachment .addAttachment").removeClass("addAttachment").addClass("removeAttachment").html("×").click(function(){
+  	       $(this).closest(".attachment").find("input").val("");
+  	       $(this).siblings(".hasAttachment").html("");
+  	       $(this).removeClass("removeAttachment").addClass("addAttachment").html("+")
+  	     });
+  	     $('.previewLightbox').trigger('close');
+				$('.previewLightbox').remove();
+				$(".lb_overlay_clear").remove();
+				
+  	     
+		} else {
+		  var invoiceId = $(this).attr("data-invoice_id")
+  		$(".invoiceContainer").html("");		
+  		moveToAction("mail", project, "addAttachment_"+invoiceId);
+		
+		}
+		
+		
+	});
+	
+	$(".saveInvoicePreview").live("click", function(event){
+		event.preventDefault();
+		var that = this;
+		var loaderSymbols = ['0', '1', '2', '3', '4', '5', '6', '7']; 
+		var loaderIndex = 0;
+		savingPdf = setInterval(function(){
+			loaderIndex = loaderIndex  < loaderSymbols.length - 1 ? loaderIndex + 1 : 0;
+			$(that).siblings('.savingPdf').html(loaderSymbols[loaderIndex]);
+		}, 100);
+		var project = "<%= escape_javascript(@project.id.to_s) %>";
+		var user = "<%= escape_javascript(@user.id.to_s) %>";
+		$.post("/users/"+user+"/projects/"+project+"/invoices", {
+			projectId: project,
+			contents: $('.pdf').eq(-1).html()
+		}, function(){
+			$(".saveInvoicePreview").die();
+			clearInterval(savingPdf);
+		});
+	});
+	
+	$(".newInvoice").click(function(event){
+		event.preventDefault();
+		var newPreviewContainer = document.createElement('div'); 
+		$(newPreviewContainer).addClass('previewLightbox');
+		$(newPreviewContainer).html("<div class='previewControls'><a href='#' class='closePreview icon'>×</a><a href='#' class='saveInvoicePreview'>Save</a><a href='#' class='sendPreview'>Send</a><span class='savingPdf icon'></span><div class='editText'>Click anywhere to edit</div></div><%= escape_javascript(render 'layouts/invoice') %>"); 
+		$(newPreviewContainer).lightbox_me({centered:true, closeSelector: ".closePreview", destroyOnClose: true, onClose: function(){$(".saveInvoicePreview").die();}});
+		$(newPreviewContainer).trigger('reposition');
+		$(".saveInvoicePreview").die();
+		$(".saveInvoicePreview").click(function(event){
+			event.preventDefault();
+			var that = this;
+			var loaderSymbols = ['0', '1', '2', '3', '4', '5', '6', '7']; 
+			var loaderIndex = 0;
+			savingPdf = setInterval(function(){
+				loaderIndex = loaderIndex  < loaderSymbols.length - 1 ? loaderIndex + 1 : 0;
+				$(that).siblings('.savingPdf').html(loaderSymbols[loaderIndex]);
+			}, 100);
+			var project = "<%= escape_javascript(@project.id.to_s) %>";
+			var user = "<%= escape_javascript(@user.id.to_s) %>";
+			$.post("/users/"+user+"/projects/"+project+"/invoices", {
+				projectId: project,
+				contents: $('.pdf').eq(-1).html()
+			}, function(){
+				
+				$('.previewLightbox').trigger('close');
+				$('.previewLightbox').remove();
+				$(".lb_overlay_clear").remove();
+				$(newPreviewContainer).remove();
+			});
+		});
+	});
+	
+<% elsif @action == "invoice2" %>
+	
+	$(".invoiceContainer").html("<div class='invoiceSelections'><%= escape_javascript(render 'layouts/invoiceList') %></div>");
+
+	var previewContainer = document.createElement('div'); 
+	$(previewContainer).addClass('previewLightbox');
+	$(previewContainer).html("<div class='previewControls'><a href='#' class='closePreview icon'>×</a><a href='#' class='saveInvoicePreview'>Save</a><a href='#' class='sendPreview' data-invoice_id='<%= escape_javascript(@interval.id.to_s) %>'>Send</a><span class='savingPdf icon'></span><div class='editText'>Click anywhere to edit</div></div><%= escape_javascript(render 'layouts/invoice2') %>"); 
+	$(previewContainer).lightbox_me({centered:true, closeSelector: ".closePreview", destroyOnClose: true, onClose: function(){$(".saveInvoicePreview").die();}});
+	$(previewContainer).trigger('reposition');
+	
+	$(".sendPreview").live("click", function(event){
+		event.preventDefault();
+		var project = "<%= escape_javascript(@project.id.to_s) %>";
+ 		var user = "<%= escape_javascript(@user.id.to_s) %>";
+
+		if($(".saveInvoicePreview").length != 0){
+		  var that = this;
+  		var loaderSymbols = ['0', '1', '2', '3', '4', '5', '6', '7']; 
+  		var loaderIndex = 0;
+  		savingPdf = setInterval(function(){
+  			loaderIndex = loaderIndex  < loaderSymbols.length - 1 ? loaderIndex + 1 : 0;
+  			$(that).siblings('.savingPdf').html(loaderSymbols[loaderIndex]);
+  		}, 100);
+  		  		$.post("/users/"+user+"/projects/"+project+"/invoices", {
+  			projectId: project,
+  			contents: $('.pdf').eq(-1).html()
+  		}, function(){
+  			$(".saveInvoicePreview").die();
+  			clearInterval(savingPdf);
+  		});
+  		
+  		$(".invoiceContainer").html("");		
+  		moveToAction("mail", project, "addAttachment");
+		
+		} else if($(".mailForm").length != 0){
+		     
+		     var invoiceId = $(this).attr("data-invoice_id")
+		     
+		     $(".invoicelistforadding li."+invoiceId).find(".icon").eq(0).html(".");
+	       
+	       $(".invoicelistforadding li."+invoiceId).siblings("li").find(".icon").eq(0).html("a");
+
+	       $(".mailForm .attachment input").val("/invoices/user/<%= escape_javascript(@user.email) %>/project/"+$(".invoicelistforadding li."+invoiceId).find('.previewInvoiceFromList').attr('data-project_id')+"/invoice/"+$(".invoicelistforadding li."+invoiceId).find('.previewInvoiceFromList').attr('data-invoice_id')+"/<%= escape_javascript(@project.name) %>.pdf");
+	       $(".mailForm .attachment .hasAttachment").html("A <span style='font-size: 10px'>Attachment ready</span>");
+  	     $(".mailForm .attachment .addAttachment").removeClass("addAttachment").addClass("removeAttachment").html("×").click(function(){
+  	       $(this).closest(".attachment").find("input").val("");
+  	       $(this).siblings(".hasAttachment").html("");
+  	       $(this).removeClass("removeAttachment").addClass("addAttachment").html("+")
+  	     });
+  	     $('.previewLightbox').trigger('close');
+				$('.previewLightbox').remove();
+				$(".lb_overlay_clear").remove();
+				
+  	     
+		} else {
+		  var invoiceId = $(this).attr("data-invoice_id")
+  		$(".invoiceContainer").html("");		
+  		moveToAction("mail", project, "addAttachment_"+invoiceId);
+		
+		}
+		
+		
+	});
+	
+	$(".saveInvoicePreview").live("click", function(event){
+		event.preventDefault();
+		var that = this;
+		var loaderSymbols = ['0', '1', '2', '3', '4', '5', '6', '7']; 
+		var loaderIndex = 0;
+		savingPdf = setInterval(function(){
+			loaderIndex = loaderIndex  < loaderSymbols.length - 1 ? loaderIndex + 1 : 0;
+			$(that).siblings('.savingPdf').html(loaderSymbols[loaderIndex]);
+		}, 100);
+		var project = "<%= escape_javascript(@project.id.to_s) %>";
+		var user = "<%= escape_javascript(@user.id.to_s) %>";
+		$.post("/users/"+user+"/projects/"+project+"/invoices", {
+			projectId: project,
+			contents: $('.pdf').eq(-1).html()
+		}, function(){
+			$(".saveInvoicePreview").die();
+			clearInterval(savingPdf);
+		});
+	});
+	
+	$(".newInvoice").click(function(event){
+		event.preventDefault();
+		var newPreviewContainer = document.createElement('div'); 
+		$(newPreviewContainer).addClass('previewLightbox');
+		$(newPreviewContainer).html("<div class='previewControls'><a href='#' class='closePreview icon'>×</a><a href='#' class='saveInvoicePreview'>Save</a><a href='#' class='sendPreview'>Send</a><span class='savingPdf icon'></span><div class='editText'>Click anywhere to edit</div></div><%= escape_javascript(render 'layouts/invoice2') %>"); 
+		$(newPreviewContainer).lightbox_me({centered:true, closeSelector: ".closePreview", destroyOnClose: true, onClose: function(){$(".saveInvoicePreview").die();}});
+		$(newPreviewContainer).trigger('reposition');
+		$(".saveInvoicePreview").die();
+		$(".saveInvoicePreview").click(function(event){
+			event.preventDefault();
+			var that = this;
+			var loaderSymbols = ['0', '1', '2', '3', '4', '5', '6', '7']; 
+			var loaderIndex = 0;
+			savingPdf = setInterval(function(){
+				loaderIndex = loaderIndex  < loaderSymbols.length - 1 ? loaderIndex + 1 : 0;
+				$(that).siblings('.savingPdf').html(loaderSymbols[loaderIndex]);
+			}, 100);
+			var project = "<%= escape_javascript(@project.id.to_s) %>";
+			var user = "<%= escape_javascript(@user.id.to_s) %>";
+			$.post("/users/"+user+"/projects/"+project+"/invoices", {
+				projectId: project,
+				contents: $('.pdf').eq(-1).html()
+			}, function(){
+				
+				$('.previewLightbox').trigger('close');
+				$('.previewLightbox').remove();
+				$(".lb_overlay_clear").remove();
+				$(newPreviewContainer).remove();
+			});
+		});
+	});
+	
+<% elsif @action == "settings" %>
+	
+	$(".settingsContainer").html("<%= escape_javascript(render 'layouts/projectEdit') %>");
+<% elsif @action == "intervals" %>
+	
+	$(".intervalsContainer").html("<%= escape_javascript(render 'layouts/intervals') %>");
+	
+	$(".newInterval").click(function(event){
+		event.preventDefault();
+		$(".createInterval").slideDown(200, function(){
+			$(this).html("<%= escape_javascript(render 'layouts/intervalCreate') %>");
+			$(this).find(".cancel a").click(function(event){
+				event.preventDefault();
+				$(".createInterval").slideUp(200, function(){
+					$(".createInterval").find("input").val("");
+					$(".manualIntervalSave").unbind();
+				});
+			});
+			$(".manualIntervalSave").click(function(event){
+				event.preventDefault();
+				$(".manualIntervalSave").unbind();
+				var desc = $(".createInterval").find(".enterDescription input").val(), duration = $(".createInterval").find(".enterMinutes input").val();
+				var project = "<%= escape_javascript(@project.id.to_s) %>", user = <%= escape_javascript(@user.id.to_s) %>;
+				$.post('/users/'+user+'/projects/'+project+'/intervals', {
+					description: desc,
+					minutes: duration,
+					projectId: project,
+					method: "manual"
+				}, function(){
+					$(".createInterval").slideUp(200, function(){
+						$(".createInterval").find("input").val("");
+						$(".manualIntervalSave").unbind();
+					});
+				});
+				var loaderSymbols = ['0', '1', '2', '3', '4', '5', '6', '7']; 
+				var loaderIndex = 0;
+				addinginterval = setInterval(function(){
+					loaderIndex = loaderIndex  < loaderSymbols.length - 1 ? loaderIndex + 1 : 0;
+					$("a.newInterval").siblings('.loading').html(loaderSymbols[loaderIndex]);
+				}, 100);
+			});
+		});
+	});
+	
+<% end %>

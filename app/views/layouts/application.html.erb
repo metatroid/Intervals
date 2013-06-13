@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+  <title><%= title %></title>
+  <meta charset="UTF-8" />
+	<meta name="description" content="<%= metatag %>" />
+	<meta name="google" value="notranslate">
+	<link rel="icon" type="image/x-icon" href="/favicon.png" />
+	<!--[if lt IE 8]>
+		<%= stylesheet_link_tag 'ie' %>
+	<![endif]-->
+  <%= stylesheet_link_tag "screen", :media => "screen, projection" %>
+  <%= stylesheet_link_tag "print", :media => "print" %>
+  <%= stylesheet_link_tag "style", "chosen" %>
+  <%= javascript_include_tag "jquery", "rails", "modernizr", "form", "jquery.remotipart", "lightbox", "chosen.jquery.min", "jquery.cookie", "application" %>
+  <!--[if lt IE 9]>
+  	<%= javascript_include_tag "selectivizr" %>
+  <![endif]-->
+  <%= csrf_meta_tag %>
+</head>
+<body>
+
+<%= yield %>
+<script>
+   var _gaq = [['_setAccount', 'UA-19470005-4'], ['_trackPageview']];
+   (function(d, t) {
+    var g = d.createElement(t),
+        s = d.getElementsByTagName(t)[0];
+    g.async = true;
+    g.src = '//www.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g, s);
+   })(document, 'script');
+</script>
+</body>
+</html>

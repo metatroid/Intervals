@@ -1,0 +1,32 @@
+.settingsHeader
+  Settings
+.settingsForm
+  - form_for(@user, :remote => true) do |f|
+    = f.label :name
+    = f.text_field :name, :placeholder => "Name"
+    .clear
+    = f.label :userlogo, "Company logo"
+    = f.file_field :userlogo
+    .clear
+    = f.label :email
+    = f.text_field :email, :placeholder => "Email"
+    .clear
+    = f.label :phone, "Telephone"
+    = f.text_field :phone, :placeholder => "Phone number"
+    .clear
+    = f.label :businessphone, "Business Telephone"
+    = f.text_field :businessphone, :placeholder => "Leave blank if same"
+    .clear
+    = f.label :address1, "Address 1"
+    = f.text_field :address1, :placeholder => "Street Address"
+    .clear
+    = f.label :address2, "Address 2"
+    = f.text_field :address2, :placeholder => "City, Country, etc."
+    .clear
+    = f.label :timezone, :class => "timezoneLabel"
+    = time_zone_select( "user", "timezone", nil, :default => "Pacific Time (US & Canada)")
+    .clear
+    = f.submit "Submit"
+%script{:type => "text/javascript"}
+  $("select").chosen();
+  $(".mainSettingsContainer").height($(".mainSettingsContainer").height() + $(".chzn-container").height() + $(".chzn-drop").height())

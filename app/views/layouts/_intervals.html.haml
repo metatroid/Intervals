@@ -1,0 +1,30 @@
+.intervalsHeader
+  Intervals
+.newInterval
+  %a{:href => "#", :class => "newInterval", :data => {:project_id => @project.id.to_s}}
+    %span.icon
+      +
+    New Interval
+  %span.loading{:class => "icon"}
+.intervalSelections
+  %ul
+    %li.createInterval
+      
+    - @intervals.each do |i|
+      %li{:class => "intervalList-#{i.id.to_s}"}
+        .icon
+          P
+        .date
+          = i.created_at.strftime("%b %-d, %H:%M")
+        .note
+          = i.description
+        .duration
+          = distance_of_time_in_hours_and_minutes(i.total.to_i*60, 0)
+        .controls
+          .delete{:class => "icon"}
+            %a{:href => "#", :class => "deleteInterval", :title => "Delete", :data => {:interval_id => i.id.to_s, :project_id => @project.id.to_s, :user_id => @user.id.to_s}}
+              ×
+          .edit
+            %a{:href => "#", :class => "editInterval", :title => "Edit", :data => {:interval_id => i.id.to_s, :project_id => @project.id.to_s, :user_id => @user.id.to_s}}
+              = image_tag("/images/edit-2.png")
+      .clear          

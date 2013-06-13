@@ -1,0 +1,13 @@
+.invoiceHeader
+  Invoices
+.newInvoice
+  %a{:href => "#", :class => "newInvoice", :data => {:project_id => @project.id.to_s}}
+    %span.icon
+      +
+    New Invoice
+  %span.loading{:class => "icon"}
+    
+%ul
+  = render :partial => "layouts/invoiceItem", :collection => @invoices, :as => :i
+        
+        

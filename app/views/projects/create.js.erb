@@ -1,0 +1,15 @@
+var projectState = $(".active a").attr("data-action");
+if(projectState == "ongoing"){
+	$(".projects ul").html("<%= escape_javascript(render :partial => "layouts/project", :collection => @ongoing, :as => :p) %>");
+} else if(projectState == "completed") {
+	$(".projects ul").html("<%= escape_javascript(render :partial => "layouts/project", :collection => @completed, :as => :p) %>");
+} else {
+	$(".projects ul").html("<%= escape_javascript(render :partial => "layouts/project", :collection => @projects, :as => :p) %>");
+}
+
+$(".newProjectForm").find('input[type=text], textarea').val("");
+$('#project_projectlogo').replaceWith('<input id="project_projectlogo" name="project[projectlogo]" type="file">');
+$('.newProjectForm').slideUp(200);
+clearInterval(submitting);
+submitting = null;
+$(".newProjectForm").find('.icon').html("");

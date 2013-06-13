@@ -1,0 +1,95 @@
+.pdf{:contentEditable => "true"}
+  .top
+  .heading
+    INVOICE
+    %span
+      = Time.now.strftime('%b %d, %Y')
+  .fromto
+    .from
+      From
+    .to
+      To
+  .invoiceInfo
+    .sender
+      .senderlogo
+        = image_tag(@user.userlogo.url.blank? ? "/images/outbox.png" : @user.userlogo.url(:thumb))
+      .senderInfo
+        .name
+          = @user.name.blank? ? "Anonymous" : @user.name
+        .address1
+          = @user.address1.blank? ? "000 Street Address" : @user.address1 
+        .address2
+          = @user.address2.blank? ? "City, State, Country" : @user.address2
+        .phone
+          Home: 
+          = @user.phone.blank? ? "(000) 000-0000" : @user.phone
+        .phone
+          = @user.email.blank? ? "" : @user.email
+    .receiver
+      .receiverlogo
+        = image_tag(@project.projectlogo.url.blank? ? "/images/inbox.png" : @project.projectlogo.url(:thumb))
+      .receiverInfo
+        .name
+          = @project.client_name.blank? ? "anonymous client" : @project.client_name
+        .email
+          = @project.client_email.blank? ? "client email" : @project.client_email
+        .url
+          = @project.pro_url.blank? ? "website url" : @project.pro_url
+  .invoiceInfo
+    .project
+      = @project.name.blank? ? "Project name" : @project.name
+      \-
+      = "%04d" % @invoiceCount
+    .detailsHeader
+      .q
+        qty
+      .u
+        unit
+      .d
+        description
+      .p
+        price
+      .t
+        total
+    .details
+      %ul
+        - @intervals.each do |i|
+          %li
+            .hrs
+              = distance_of_time_in_hours_and_minutes(i.total.to_i*60, 0)
+            .unt
+              Hours
+            .desc
+              = i.description.blank? ? "Design/development" : i.description
+            .prc
+              = @project.rate.blank? ? "-" : "-"
+            .total
+              \-
+  .invoiceInfo
+    .totals
+      .sub
+        subtotal
+      .subamount
+        = number_to_currency(@project.project_remainder.blank? ? @project.projectfee : @project.project_remainder, :unit => "$")
+      .tax
+        tax
+      .taxamount
+        &nbsp;
+      .ship
+        shipping
+      .shipamount
+        &nbsp;
+      .total
+        total
+      .totalamount
+        = number_to_currency(@project.project_remainder.blank? ? @project.projectfee : @project.project_remainder, :unit => "$")
+  .invoiceInfo
+    .notes
+      .notesHeading
+        special notes
+      .notesList
+        %ul
+          %li
+          %li
+          %li
+  .clear

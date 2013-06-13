@@ -1,0 +1,15 @@
+$(".application").animate({
+	left: "0"
+}, 400);
+$(".settingsContainer").slideUp(200, function(){
+	$(".action").html("");
+});
+history.pushState({ action: "home", project: "0" }, '', "/home");
+var projectState = $(".active a").attr("data-action");
+if(projectState == "ongoing"){
+	$(".projects ul").html("<%= escape_javascript(render :partial => "layouts/project", :collection => @ongoing, :as => :p) %>");
+} else if(projectState == "completed") {
+	$(".projects ul").html("<%= escape_javascript(render :partial => "layouts/project", :collection => @completed, :as => :p) %>");
+} else {
+	$(".projects ul").html("<%= escape_javascript(render :partial => "layouts/project", :collection => @projects, :as => :p) %>");
+}

@@ -1,0 +1,44 @@
+.mailHeader
+  Send mail
+.mailForm
+  - form_tag('/email', :id => 'contact_form', :remote => true) do
+    .to
+      Sending mail to
+      = @project.client_email.blank? ? "noclient@metatroid.com" : @project.client_email
+      = link_to image_tag("/images/edit-2.png"), "#", :class => 'editItem', :title => "edit"
+      .clear
+      .edit
+        = label :email, "Client email"
+        = text_field :email, :client, :class => 'required email', :value => @project.client_email.blank? ? "noclient@metatroid.com" : @project.client_email
+        .clear
+    .from
+      Sending as
+      = @user.name.blank? ? "<span class='noName'>(no name)</span>".html_safe : @user.name
+      at
+      = @user.email
+      = link_to image_tag("/images/edit-2.png"), "#", :class => 'editItem', :title => "edit"
+      .edit
+        = label :email, :name, "Name:"
+        = text_field :email, :name, :value => @user.name
+        .clear
+        = label :email, :address, "Your address:"
+        = text_field :email, :address, :class => 'required email', :value => @user.email
+        .clear
+    = label :email, :subject, "Subject:"
+    = text_field :email, :subject
+    .clear
+    = label :email, :body, "Message:"
+    = text_area :email, :body, :rows => 8, :cols => 50
+    .clear
+    .attachment
+      = label :email, :attach, "Attachment:"
+      = text_field :email, :attach, :type => "hidden"
+      .hasAttachment{:class => "icon"}
+        %span{:style => "font-size: 10px"}
+          No attachment
+      .addAttachment{:class => "icon"}
+        +
+    .clear
+    = submit_tag "Send", :id => 'submit_email'
+    %span.icon{:class => "sendingMail"}
+.invoicelistforadding

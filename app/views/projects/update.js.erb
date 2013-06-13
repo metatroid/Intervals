@@ -1,0 +1,24 @@
+clearInterval(submitting);
+$(".application").animate({
+	left: "0"
+}, 400);
+$(".settingsContainer").slideUp(200, function(){
+	$(".action").html("");
+});
+history.pushState({ action: "home", project: "0" }, '', "/home");
+var projectState = $(".active a").attr("data-action");
+
+$("li.projectWrapper-<%= escape_javascript(@project.id.to_s) %>").find(".pTime").html("Time worked: <%= escape_javascript(distance_of_time_in_hours_and_minutes(@project.total_time.to_i*60, 0)) %>");
+$("li.projectWrapper-<%= escape_javascript(@project.id.to_s) %>").find(".pBalance").html("Project overage: $<%= escape_javascript(@project.projectbalance.blank? ? "" : @project.projectbalance) %>");
+
+$("li.projectWrapper-<%= escape_javascript(@project.id.to_s) %>").find(".pName").html("<%= escape_javascript(@project.name.blank? ? "Project Name" : @project.name) %>");
+$("li.projectWrapper-<%= escape_javascript(@project.id.to_s) %>").find(".cName").html("<%= escape_javascript(@project.client_name.blank? ? "Client Name" : @project.client_name) %>");
+$("li.projectWrapper-<%= escape_javascript(@project.id.to_s) %>").find(".pRate").html("Rate: $<%= escape_javascript(@project.rate.blank? ? "0" : @project.rate) %>/hr");
+$("li.projectWrapper-<%= escape_javascript(@project.id.to_s) %>").find(".pBudget").html("Project budget: $<%= escape_javascript(@project.projectfee.blank? ? "" : @project.projectfee) %>");
+$("li.projectWrapper-<%= escape_javascript(@project.id.to_s) %>").find(".description").html("<p><%= escape_javascript(@project.description.blank? ? "Project Description" : @project.description) %></p>");
+$("li.projectWrapper-<%= escape_javascript(@project.id.to_s) %>").find(".icons").html("<%= escape_javascript(@project.projectlogo.blank? ? image_tag("/images/defaultProjectIcon.png") : image_tag(@project.projectlogo.url(:thumb))) %>");
+
+$("li.projectWrapper-<%= escape_javascript(@project.id.to_s) %>").find(".pDueFlat span").html("$<%= escape_javascript(@project.project_remainder) %>");
+$("li.projectWrapper-<%= escape_javascript(@project.id.to_s) %>").find(".pDueHourly span").html("$<%= escape_javascript(@project.project_amount) %>");
+
+$("li.projectWrapper-<%= escape_javascript(@project.id.to_s) %>").find(".pPaid").html("Amount paid: $<%= escape_javascript(@project.project_paid) %>");

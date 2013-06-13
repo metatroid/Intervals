@@ -1,0 +1,160 @@
+.pdf {
+  width: 960px;
+  margin: 0 auto;
+  padding: 50px;
+  background: #fefefe; }
+  .pdf .top {
+    height: 21px;
+    background: url("/home/intertroid/intervals.metatroid.com/public/images/invoiceTop.gif");
+    margin-bottom: 50px; }
+  .pdf .heading {
+    font-size: 36px;
+    margin-bottom: 20px;
+    color: #444444; }
+    .pdf .heading span {
+      float: right;
+      font-size: 18px;
+      padding-top: 18px;
+      color: #666666; }
+  .pdf .fromto {
+    clear: both;
+    border-top: 2px solid #aaaaaa;
+    border-bottom: 2px solid #aaaaaa;
+    float: left;
+    padding: 10px 0 3px; }
+    .pdf .fromto .from, .pdf .fromto .to {
+      float: left;
+      text-transform: uppercase;
+      color: #666666;
+      font-size: 22px; }
+    .pdf .fromto .from {
+      width: 480px; }
+    .pdf .fromto .to {
+      width: 470px;
+      padding-left: 10px; }
+  .pdf .sender, .pdf .receiver {
+    float: left;
+    width: 479px;
+    padding-top: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #cccccc;
+    min-height: 165px }
+  .pdf .invoiceInfo {
+    margin-bottom: 25px;
+    float: left;
+    width: 100%; }
+    .pdf .invoiceInfo .sender {
+      border-right: 1px solid #cccccc; }
+    .pdf .invoiceInfo .receiver {
+      border-left: 1px solid #cccccc; }
+    .pdf .invoiceInfo .senderlogo, .pdf .invoiceInfo .receiverlogo {
+      float: left;
+      width: 175px;
+      padding-left: 25px; }
+    .pdf .invoiceInfo .senderInfo, .pdf .invoiceInfo .receiverInfo {
+      float: left;
+      width: 265px;
+      padding-top: 10px; }
+    .pdf .invoiceInfo .name, .pdf .invoiceInfo .address1, .pdf .invoiceInfo .address2, .pdf .invoiceInfo .phone, .pdf .invoiceInfo .email, .pdf .invoiceInfo .url {
+      font-size: 18px;
+      color: #666666;
+      line-height: 1.6; }
+    .pdf .invoiceInfo .project {
+      font-size: 32px;
+      color: #444444;
+      margin-bottom: 10px; }
+    .pdf .invoiceInfo .detailsHeader {
+      background: #f2f2f2;
+      float: left;
+      border-bottom: 1px solid #cccccc; }
+      .pdf .invoiceInfo .detailsHeader .q, .pdf .invoiceInfo .detailsHeader .u, .pdf .invoiceInfo .detailsHeader .d, .pdf .invoiceInfo .detailsHeader .p, .pdf .invoiceInfo .detailsHeader .t {
+        float: left;
+        text-transform: uppercase;
+        color: #666666;
+        font-size: 18px;
+        padding: 2px 0 0 5px; }
+      .pdf .invoiceInfo .detailsHeader .q {
+        width: 205px; }
+      .pdf .invoiceInfo .detailsHeader .u {
+        width: 95px; }
+      .pdf .invoiceInfo .detailsHeader .d {
+        width: 385px; }
+      .pdf .invoiceInfo .detailsHeader .p {
+        width: 115px; }
+      .pdf .invoiceInfo .detailsHeader .t {
+        width: 135px; }
+    .pdf .invoiceInfo .details {
+      clear: both;
+      margin-bottom: 50px; }
+      .pdf .invoiceInfo .details ul {
+        list-style: none;
+        margin: 0;
+        padding: 0; }
+        .pdf .invoiceInfo .details ul li {
+          font-size: 16px;
+          color: #444444;
+          height: 33px;
+          border-bottom: 1px solid #cccccc; }
+          .pdf .invoiceInfo .details ul li div {
+            float: left;
+            padding: 6px 0 2px 5px; }
+          .pdf .invoiceInfo .details ul li .hrs {
+            width: 205px; }
+          .pdf .invoiceInfo .details ul li .unt {
+            width: 95px; }
+          .pdf .invoiceInfo .details ul li .desc {
+            width: 385px; }
+          .pdf .invoiceInfo .details ul li .prc {
+            width: 115px; }
+          .pdf .invoiceInfo .details ul li .total {
+            width: 135px; }
+    .pdf .invoiceInfo .totals {
+      clear: both;
+      float: right;
+      background: #f2f2f2;
+      padding: 10px 10px 5px 75px; }
+      .pdf .invoiceInfo .totals .sub, .pdf .invoiceInfo .totals .tax, .pdf .invoiceInfo .totals .ship, .pdf .invoiceInfo .totals .total {
+        text-transform: uppercase;
+        font-size: 18px;
+        float: left;
+        text-align: right;
+        width: 100px;
+        padding: 5px 0;
+        clear: both;
+        margin-right: 10px;
+        margin-bottom: 5px; }
+      .pdf .invoiceInfo .totals .subamount, .pdf .invoiceInfo .totals .taxamount, .pdf .invoiceInfo .totals .shipamount, .pdf .invoiceInfo .totals .totalamount {
+        padding: 5px 0 5px 5px;
+        float: left;
+        font-size: 18px;
+        width: 150px;
+        color: #444444;
+        margin-bottom: 5px; }
+      .pdf .invoiceInfo .totals .subamount, .pdf .invoiceInfo .totals .totalamount {
+        background: #fefefe; }
+      .pdf .invoiceInfo .totals .taxamount, .pdf .invoiceInfo .totals .shipamount {
+        background: #f9f9f9; }
+      .pdf .invoiceInfo .totals .tax, .pdf .invoiceInfo .totals .ship {
+        color: #666666; }
+      .pdf .invoiceInfo .totals .sub, .pdf .invoiceInfo .totals .total {
+        color: #444444; }
+    .pdf .invoiceInfo .notes {
+      border: 1px solid #cccccc;
+      padding: 5px 5px 20px; }
+      .pdf .invoiceInfo .notes .notesHeading {
+        text-transform: uppercase;
+        color: #939393;
+        font-size: 18px; }
+      .pdf .invoiceInfo .notes .notesList {
+        height: 65px;
+        margin-bottom: 50px; }
+        .pdf .invoiceInfo .notes .notesList ul {
+          list-style: none;
+          padding: 0;
+          width: 90%;
+          margin: 0 auto; }
+          .pdf .invoiceInfo .notes .notesList ul li {
+            height: 33px;
+            border-bottom: 1px dotted #cccccc;
+            font-size: 25px;
+            color: #666; }

@@ -1,0 +1,72 @@
+<% if @method == "timer" %>
+$(".project-<%= escape_javascript(@project.id.to_s) %> .timerResponse").html("<div class='intervalTimer interval-<%= escape_javascript(@interval.id.to_s) %>'><span class='hours'>00</span>:<span class='minutes'>00</span>:<span class='seconds'>00</span></div>");
+
+var seconds<%= escape_javascript(@interval.id.to_s) %> = 0, minutes<%= escape_javascript(@interval.id.to_s) %> = 0, hours<%= escape_javascript(@interval.id.to_s) %> = 0;
+
+instance<%= escape_javascript(@interval.id.to_s) %> = setInterval(function(){
+	seconds<%= escape_javascript(@interval.id.to_s) %>++;
+	if(seconds<%= escape_javascript(@interval.id.to_s) %> < 10){
+		seconds<%= escape_javascript(@interval.id.to_s) %> = "0"+seconds<%= escape_javascript(@interval.id.to_s) %>;
+	}
+	if(seconds<%= escape_javascript(@interval.id.to_s) %> > 59){
+		minutes<%= escape_javascript(@interval.id.to_s) %>++;
+		
+		// periodic updates
+		var user = "<%= escape_javascript(@user.id.to_s) %>";
+		var project = "<%= escape_javascript(@project.id.to_s) %>";
+		var interval = "<%= escape_javascript(@interval.id.to_s) %>";
+		var timestamp = Date.now();
+		var date = new Date(timestamp);
+		var month = date.getMonth();
+		var day = date.getDate();
+		var hour = date.getHours();
+		var minute = date.getMinutes();
+		var year = date.getFullYear();
+		$.ajax({
+			type: 'PUT',
+			url: '/users/'+user+'/projects/'+project+'/intervals/'+interval,
+			data: {
+				end: year +', ' + month + ', ' + day + ', ' + hour + ', ' + minute + ' ('+timestamp+')',
+				projectId: project,
+				intervalId: interval,
+				description: "In Progress",
+				flag: "running"
+			} 
+		});
+		//
+		
+		seconds<%= escape_javascript(@interval.id.to_s) %> = 0;
+	}
+	if(minutes<%= escape_javascript(@interval.id.to_s) %> < 10){
+		while(minutes<%= escape_javascript(@interval.id.to_s) %>.toString().length < 2){
+			minutes<%= escape_javascript(@interval.id.to_s) %> = "0"+minutes<%= escape_javascript(@interval.id.to_s) %>;	
+		}
+	}
+	if(minutes<%= escape_javascript(@interval.id.to_s) %> > 59){
+		hours<%= escape_javascript(@interval.id.to_s) %>++;
+		minutes<%= escape_javascript(@interval.id.to_s) %> = 0;
+	}
+	if(hours<%= escape_javascript(@interval.id.to_s) %> < 10){
+		while(hours<%= escape_javascript(@interval.id.to_s) %>.toString().length < 2){
+			hours<%= escape_javascript(@interval.id.to_s) %> = "0"+hours<%= escape_javascript(@interval.id.to_s) %>;
+		}
+	}
+	$(".interval-<%= escape_javascript(@interval.id.to_s) %> .hours").html(hours<%= escape_javascript(@interval.id.to_s) %>);
+	$(".interval-<%= escape_javascript(@interval.id.to_s) %> .minutes").html(minutes<%= escape_javascript(@interval.id.to_s) %>);
+	$(".interval-<%= escape_javascript(@interval.id.to_s) %> .seconds").html(seconds<%= escape_javascript(@interval.id.to_s) %>);
+}, 1000);
+
+<% else %>
+
+	$(".intervalSelections ul").append("<li class='intervalList-<%= escape_javascript(@interval.id.to_s) %>'><div class='icon'>P</div><div class='date'><%= escape_javascript(@interval.created_at.strftime("%b %-d, %H:%M")) %></div><div class='note'><%= escape_javascript(@interval.description) %></div><div class='duration'><%= escape_javascript(distance_of_time_in_hours_and_minutes(@interval.total.to_i*60, 0)) %></div><div class='controls'><div class='delete icon'><a href='#' class='deleteInterval' title='Delete' data-interval_id='<%= escape_javascript(@interval.id.to_s) %>' data-project_id='<%= escape_javascript(@project.id.to_s) %>' data-user_id='<%= escape_javascript(@user.id.to_s) %>'>×</a></div><div class='edit'><a href='#' class='editInterval' title='Edit' data-interval_id='<%= escape_javascript(@interval.id.to_s) %>' data-project_id='<%= escape_javascript(@project.id.to_s) %>' data-user_id='<%= escape_javascript(@user.id.to_s) %>'><img src='/images/edit-2.png'></a></div></div></li>");
+	clearInterval(addinginterval);
+	$("a.newInterval").siblings('.icon').html("");
+	var projectState = $(".active a").attr("data-action");
+	
+	$("li.projectWrapper-<%= escape_javascript(@project.id.to_s) %>").find(".pTime").html("Time worked: <%= escape_javascript(distance_of_time_in_hours_and_minutes(@project.total_time.to_i*60, 0)) %>");
+	$("li.projectWrapper-<%= escape_javascript(@project.id.to_s) %>").find(".pBalance").html("Project overage: $<%= escape_javascript(@project.projectbalance.to_s) %>");
+	$("li.projectWrapper-<%= escape_javascript(@project.id.to_s) %>").find(".pDueHourly span").html("$<%= escape_javascript(@project.project_amount) %>");
+	
+
+	
+<% end %>

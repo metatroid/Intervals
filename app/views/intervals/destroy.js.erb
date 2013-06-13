@@ -1,0 +1,24 @@
+<% if @method != "manual" %>
+	$(".project-<%= escape_javascript(@project.id.to_s) %> .timerResponse").html("");
+	$(".project-<%= escape_javascript(@project.id.to_s) %> .addDescription").hide();
+	var projectState = $(".active a").attr("data-action");
+	if(projectState == "ongoing"){
+		$(".projects ul").html("<%= escape_javascript(render :partial => "layouts/project", :collection => @ongoing, :as => :p) %>");
+	} else if(projectState == "completed") {
+		$(".projects ul").html("<%= escape_javascript(render :partial => "layouts/project", :collection => @completed, :as => :p) %>");
+	} else {
+		$(".projects ul").html("<%= escape_javascript(render :partial => "layouts/project", :collection => @projects, :as => :p) %>");
+	}
+
+<% else %>
+	$(".intervalList-<%= escape_javascript(@interval.id.to_s) %>").remove();
+	var projectState = $(".active a").attr("data-action");
+	if(projectState == "ongoing"){
+		$(".projects ul").html("<%= escape_javascript(render :partial => "layouts/project", :collection => @ongoing, :as => :p) %>");
+	} else if(projectState == "completed") {
+		$(".projects ul").html("<%= escape_javascript(render :partial => "layouts/project", :collection => @completed, :as => :p) %>");
+	} else {
+		$(".projects ul").html("<%= escape_javascript(render :partial => "layouts/project", :collection => @projects, :as => :p) %>");
+	}
+
+<% end %>

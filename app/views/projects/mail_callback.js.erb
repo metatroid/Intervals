@@ -1,0 +1,11 @@
+$(".application").animate({
+	left: "0"
+}, 400);
+clearInterval(sendingMail);
+$(".action").html("");
+$(".notifications").html("<div class='notify'><div class='msg'><span class='icon'>@</span>Email sent</div></div>");
+setTimeout(function(){
+	$(".notify").fadeOut(400, function(){
+		$(".notifications").html("");
+	})	
+}, 1500);
